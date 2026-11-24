@@ -26,7 +26,10 @@ class TransactionalDatabase:
         return cls._instance
 
     def _init_db(self):
-        self.db_path = "eventpulse_orders.db"
+        # Store database inside eventpulse/data directory
+        data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../data"))
+        os.makedirs(data_dir, exist_ok=True)
+        self.db_path = os.path.join(data_dir, "eventpulse_orders.db")
         self._lock = threading.Lock()
         with self._get_connection() as conn:
             cursor = conn.cursor()

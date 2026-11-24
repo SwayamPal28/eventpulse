@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EventPulse - DevOps Evaluation Phase 1 Presentation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .slide { display: none; }
+    .slide.active { display: flex; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between font-sans select-none">
+
+  <!-- Top Navigation & Progress -->
+  <header class="border-b border-slate-800 bg-slate-900/90 px-6 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <span class="text-xs px-2.5 py-1 rounded bg-indigo-950 text-indigo-400 border border-indigo-800 font-mono font-bold">RVCE ISE · IS374TFA</span>
+      <span class="text-sm font-semibold text-slate-300">EventPulse: Evaluation Phase - 1</span>
+    </div>
+    <div class="flex items-center gap-4 text-xs font-mono">
+      <span id="slide-indicator" class="text-cyan-400 font-bold">Slide 1 / 6</span>
+      <div class="flex items-center gap-1.5">
+        <button id="prev-btn" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition">
+          <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <button id="next-btn" class="px-2.5 py-1 rounded bg-cyan-600 hover:bg-cyan-500 text-white font-semibold transition">
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Presentation Slides Container -->
+  <main class="flex-1 flex items-center justify-center p-6 md:p-12 max-w-6xl mx-auto w-full">
+
+    <!-- Slide 1: Title Slide -->
+    <div class="slide active flex-col items-center justify-center text-center space-y-6 w-full animate-fade-in">
+      <div class="text-xs font-bold tracking-widest uppercase text-cyan-400 bg-cyan-950/60 border border-cyan-800 px-4 py-1.5 rounded-full inline-block">
+        Department of Information Science & Engineering · Academic Year 2026-27
+      </div>
+      <div class="text-rose-500 font-bold text-lg md:text-xl">
+        Development and Operations (DevOps) (IS374TFA)
+      </div>
+      <h1 class="text-3xl md:text-5xl font-extrabold bg-gradient-to-r from-cyan-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent max-w-4xl leading-tight">
+        EventPulse: An Event-Driven, High-Concurrency Distributed Ticketing & Flash-Sale Engine
+      </h1>
+      <div class="text-slate-400 text-sm font-mono tracking-wide">
+        Evaluation - Phase - 1
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl w-full pt-8 text-left border-t border-slate-800/80">
+        <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800">
+          <div class="text-[11px] uppercase tracking-wider text-slate-500 font-bold mb-1">Carried Out By:</div>
+          <div class="text-sm font-medium text-slate-200">Vinay Sinnur <span class="text-xs text-slate-400 font-mono">(1RV23IS138)</span></div>
+          <div class="text-sm font-medium text-slate-200">Vinayak Kumar Singh <span class="text-xs text-slate-400 font-mono">(1RV23IS139)</span></div>
+          <div class="text-sm font-medium text-slate-200">Swayam Prayash Pal <span class="text-xs text-slate-400 font-mono">(1RV23IS128)</span></div>
+        </div>
+        <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 flex flex-col justify-center">
+          <div class="text-[11px] uppercase tracking-wider text-slate-500 font-bold mb-1">Guide:</div>
+          <div class="text-base font-bold text-white">B K Srinivas</div>
+          <div class="text-xs text-slate-400">Assistant Professor, Department of ISE</div>
+          <div class="text-xs italic text-cyan-400 mt-1">"Go, change the world"</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 2: Topic Relevance to Course -->
+    <div class="slide flex-col justify-center space-y-6 w-full">
+      <div class="border-b border-slate-800 pb-3 flex justify-between items-end">
+        <div>
+          <span class="text-xs text-cyan-400 font-bold uppercase tracking-wider">Evaluation Section 1 (5 Marks)</span>
+          <h2 class="text-2xl md:text-3xl font-bold text-white mt-1">Topic Relevance to the Course</h2>
+        </div>
+        <span class="text-xs italic text-slate-400">Go, change the world</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs md:text-sm">
+        <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-1">
+          <div class="font-bold text-emerald-400 flex items-center gap-2">
+            <i class="fa-solid fa-cube"></i> Immutable Containerization
+          </div>
+          <p class="text-slate-300 leading-relaxed text-xs">
+            Multi-stage Docker builds package polyglot services consistently, eliminating environment drift between development and production.
+          </p>
+        </div>
+        <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-1">
+          <div class="font-bold text-amber-400 flex items-center gap-2">
+            <i class="fa-solid fa-code-branch"></i> Infrastructure as Code (IaC)
+          </div>
+          <p class="text-slate-300 leading-relaxed text-xs">
+            Terraform & LocalStack automate repeatable provisioning of message queues (SQS), notification topics (SNS), and cloud object storage (S3).
+          </p>
+        </div>
+        <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-1">
+          <div class="font-bold text-cyan-400 flex items-center gap-2">
+            <i class="fa-solid fa-shield-halved"></i> Automated CI/CD & DevSecOps
+          </div>
+          <p class="text-slate-300 leading-relaxed text-xs">
+            GitHub Actions pipelines run automated unit tests, linting, and Trivy container vulnerability security scans on commit.
+          </p>
+        </div>
+        <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-1">
+          <div class="font-bold text-indigo-400 flex items-center gap-2">
+            <i class="fa-solid fa-network-wired"></i> Kubernetes Orchestration
+          </div>
+          <p class="text-slate-300 leading-relaxed text-xs">
+            Kind/Minikube cluster with Horizontal Pod Autoscaling (HPA), self-healing liveness/readiness probes, and zero-downtime rolling updates.
+          </p>
+        </div>
+        <div class="md:col-span-2 p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-1">
+          <div class="font-bold text-purple-400 flex items-center gap-2">
+            <i class="fa-solid fa-chart-line"></i> Continuous Verification & DORA Metrics
+          </div>
+          <p class="text-slate-300 leading-relaxed text-xs">
+            Automated k6 and async Python stress tests validate flash-sale resilience (0 double bookings under concurrency) while tracking DORA metrics (Deployment Frequency, Lead Time, MTTR, Change Failure Rate).
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 3: Literature Survey -->
+    <div class="slide flex-col justify-center space-y-4 w-full">
+      <div class="border-b border-slate-800 pb-2 flex justify-between items-end">
+        <div>
+          <span class="text-xs text-cyan-400 font-bold uppercase tracking-wider">Evaluation Section 2 (5 Marks)</span>
+          <h2 class="text-2xl md:text-3xl font-bold text-white mt-1">Existing Approaches / Literature Review</h2>
+        </div>
+        <span class="text-xs italic text-slate-400">Go, change the world</span>
+      </div>
+
+      <div class="overflow-x-auto rounded-xl border border-slate-800 bg-slate-900">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-slate-800/80 text-[11px] text-cyan-300 uppercase tracking-wider border-b border-slate-700">
+            <tr>
+              <th class="py-2.5 px-4 w-1/3">Research Paper Title & Authors</th>
+              <th class="py-2.5 px-4">Relevance to Our Project (EventPulse)</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800/80 leading-relaxed">
+            <tr>
+              <td class="py-2.5 px-4 font-semibold text-white">
+                "BASE: An Acid Alternative"<br><span class="text-slate-400 font-normal italic">by Dan Pritchett (ACM Queue)</span>
+              </td>
+              <td class="py-2.5 px-4 text-slate-300">
+                Justifies dropping slow SQL Two-Phase Commits (2PC) in favor of eventual consistency, Message Queues, and the Transactional Outbox pattern used in our checkout flow.
+              </td>
+            </tr>
+            <tr>
+              <td class="py-2.5 px-4 font-semibold text-white">
+                "Design and Implementation of High Concurrency Ticketing System Based on Redis and RabbitMQ"<br><span class="text-slate-400 font-normal italic">by Y. Zhang, et al. (IEEE)</span>
+              </td>
+              <td class="py-2.5 px-4 text-slate-300">
+                Directly validates our choice of using Redis Lua scripts for atomic sub-millisecond seat holds and RabbitMQ for asynchronous ticket processing.
+              </td>
+            </tr>
+            <tr>
+              <td class="py-2.5 px-4 font-semibold text-white">
+                "Microservices: Yesterday, Today, and Tomorrow"<br><span class="text-slate-400 font-normal italic">by Nicola Dragoni, et al.</span>
+              </td>
+              <td class="py-2.5 px-4 text-slate-300">
+                Provides theoretical foundation for Bounded Contexts, mathematically justifying why isolating read-heavy seatmaps from write-heavy reservation engines prevents crashes.
+              </td>
+            </tr>
+            <tr>
+              <td class="py-2.5 px-4 font-semibold text-white">
+                "Performance Evaluation of Microservices in Docker and Kubernetes"<br><span class="text-slate-400 font-normal italic">by D. N. Jha, et al.</span>
+              </td>
+              <td class="py-2.5 px-4 text-slate-300">
+                Supports our container orchestration strategy, detailing how Kubernetes Horizontal Pod Auto-scaling and health probes handle sudden flash-sale traffic spikes.
+              </td>
+            </tr>
+            <tr>
+              <td class="py-2.5 px-4 font-semibold text-white">
+                "Infrastructure as Code: A Systematic Literature Review"<br><span class="text-slate-400 font-normal italic">by J. C. e Silva, et al.</span>
+              </td>
+              <td class="py-2.5 px-4 text-slate-300">
+                Backs our DevOps methodology of using Terraform and LocalStack to eliminate manual configuration drift and deploy fully reproducible cloud-native environments.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Slide 4: Real-World Applications -->
+    <div class="slide flex-col justify-center space-y-6 w-full">
+      <div class="border-b border-slate-800 pb-3 flex justify-between items-end">
+        <div>
+          <span class="text-xs text-cyan-400 font-bold uppercase tracking-wider">Evaluation Section 3 (5 Marks)</span>
+          <h2 class="text-2xl md:text-3xl font-bold text-white mt-1">Application of the Topic in Real World</h2>
+        </div>
+        <span class="text-xs italic text-slate-400">Go, change the world</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
+          <div class="text-base font-bold text-white flex items-center gap-2">
+            <span class="w-8 h-8 rounded-lg bg-rose-500/20 text-rose-400 flex items-center justify-center text-sm">🎟️</span>
+            Live Entertainment & Ticketing
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Platforms like <strong>BookMyShow</strong> and <strong>Ticketmaster</strong> handling massive concert and sports stadium flash-sale surges without overselling seats or dropping user sessions.
+          </p>
+        </div>
+        <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
+          <div class="text-base font-bold text-white flex items-center gap-2">
+            <span class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center text-sm">🛍️</span>
+            E-Commerce Flash Sales
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            <strong>Amazon Prime Day</strong> and <strong>Flipkart Big Billion Days</strong> managing strictly limited SKU inventory with temporary cart hold timers and asynchronous checkout finalization.
+          </p>
+        </div>
+        <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
+          <div class="text-base font-bold text-white flex items-center gap-2">
+            <span class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-sm">🚆</span>
+            Travel & Transit Booking
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            <strong>IRCTC Tatkal</strong> and airline reservation windows enforcing strict payment hold timeouts without causing database deadlock cascades.
+          </p>
+        </div>
+        <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
+          <div class="text-base font-bold text-white flex items-center gap-2">
+            <span class="w-8 h-8 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-sm">🎓</span>
+            University & Campus Portals
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            High-concurrency college fest registrations (e.g., <strong>RVCE 8th Mile</strong>), inter-tier hackathons, and hostel room allotting where thousands of students submit at 00:00.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 5: Tools Required -->
+    <div class="slide flex-col justify-center space-y-4 w-full">
+      <div class="border-b border-slate-800 pb-2 flex justify-between items-end">
+        <div>
+          <span class="text-xs text-cyan-400 font-bold uppercase tracking-wider">Evaluation Section 4 (5 Marks)</span>
+          <h2 class="text-2xl md:text-3xl font-bold text-white mt-1">Tools Required for Demonstration</h2>
+        </div>
+        <span class="text-xs italic text-slate-400">Go, change the world</span>
+      </div>
+
+      <div class="overflow-x-auto rounded-xl border border-slate-800 bg-slate-900">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-slate-800/80 text-[11px] text-cyan-300 uppercase tracking-wider border-b border-slate-700">
+            <tr>
+              <th class="py-2.5 px-4 w-1/4">Category</th>
+              <th class="py-2.5 px-4 w-1/3">Tool / Technology</th>
+              <th class="py-2.5 px-4">Purpose in Demonstration</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800/80 leading-relaxed">
+            <tr>
+              <td class="py-2 px-4 font-semibold text-white">Container & Orchestration</td>
+              <td class="py-2 px-4 font-mono text-cyan-300">Docker, Kubernetes (Kind/Minikube)</td>
+              <td class="py-2 px-4 text-slate-300">Multi-container isolation and automated rolling deployments.</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 font-semibold text-white">Cloud Emulation & IaC</td>
+              <td class="py-2 px-4 font-mono text-cyan-300">Terraform, LocalStack</td>
+              <td class="py-2 px-4 text-slate-300">Version-controlled, declarative AWS infrastructure setup (SQS, SNS, S3).</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 font-semibold text-white">CI/CD & Security</td>
+              <td class="py-2 px-4 font-mono text-cyan-300">GitHub Actions, Trivy</td>
+              <td class="py-2 px-4 text-slate-300">Automated build pipelines, testing, and container vulnerability scanning.</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 font-semibold text-white">Concurrency & Caching</td>
+              <td class="py-2 px-4 font-mono text-cyan-300">Redis (Lua Scripting)</td>
+              <td class="py-2 px-4 text-slate-300">Atomic, sub-millisecond seat holding (Lua scripts) and rate limiting.</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 font-semibold text-white">Message Broker</td>
+              <td class="py-2 px-4 font-mono text-cyan-300">RabbitMQ / Apache Kafka</td>
+              <td class="py-2 px-4 text-slate-300">Asynchronous event queuing for CQRS and ticketing workflows.</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 font-semibold text-white">Polyglot Databases</td>
+              <td class="py-2 px-4 font-mono text-cyan-300">PostgreSQL, Apache Cassandra</td>
+              <td class="py-2 px-4 text-slate-300">Relational outbox storage (Postgres) and high-volume audit logging (Cassandra).</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-4 font-semibold text-white">Backend & Load Testing</td>
+              <td class="py-2 px-4 font-mono text-cyan-300">Python (FastAPI), Apache JMeter / k6</td>
+              <td class="py-2 px-4 text-slate-300">Microservice APIs and simulating live flash-sale traffic spikes.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Slide 6: Thank You & Live Demo Transition -->
+    <div class="slide flex-col items-center justify-center text-center space-y-6 w-full">
+      <div class="text-4xl md:text-6xl font-extrabold text-white">
+        Thank you
+      </div>
+      <p class="text-cyan-400 font-mono text-sm max-w-xl">
+        EventPulse: Live interactive demonstration of Sub-millisecond Atomic Locking, CQRS Segregation, and Zero Double-Bookings under Concurrency.
+      </p>
+      <div class="pt-6">
+        <a href="http://localhost:8000" target="_blank" class="px-6 py-3 rounded-2xl bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white font-bold text-sm shadow-xl shadow-cyan-500/20 transition flex items-center gap-2 mx-auto">
+          <i class="fa-solid fa-play"></i> Launch EventPulse Interactive Demo Portal
+        </a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-800 bg-slate-900/60 px-6 py-3 text-center text-xs text-slate-500">
+    Use <kbd class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">←</kbd> and <kbd class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">→</kbd> arrow keys to navigate slides.
+  </footer>
+
+  <script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll(".slide");
+    const indicator = document.getElementById("slide-indicator");
+
+    function showSlide(index) {
+      slides[currentSlide].classList.remove("active");
+      currentSlide = (index + slides.length) % slides.length;
+      slides[currentSlide].classList.add("active");
+      indicator.textContent = `Slide ${currentSlide + 1} / ${slides.length}`;
+    }
+
+    document.getElementById("prev-btn").onclick = () => showSlide(currentSlide - 1);
+    document.getElementById("next-btn").onclick = () => showSlide(currentSlide + 1);
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight" || e.key === " ") showSlide(currentSlide + 1);
+      if (e.key === "ArrowLeft") showSlide(currentSlide - 1);
+    });
+  </script>
+</body>
+</html>
