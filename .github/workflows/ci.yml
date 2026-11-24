@@ -1,0 +1,111 @@
+name: EventPulse CI/CD & DevSecOps Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint-and-unit-test:
+    name: Linting & Unit Testing
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 pytest httpx
+          pip install -r eventpulse/requirements.txt
+
+      - name: Run Flake8 Code Quality Linter
+        run: |
+          # Stop build if there are Python syntax errors or undefined names
+          flake8 eventpulse --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 eventpulse --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+      - name: Execute Automated Unit & Concurrency Tests
+        run: |
+          pytest eventpulse/tests/ -v
+
+  infrastructure-audit:
+    name: Terraform IaC Linting & tfsec Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.0
+
+      - name: Terraform Format Check
+        run: terraform fmt -check eventpulse/infrastructure/terraform
+
+      - name: Terraform Validate
+        run: |
+          cd eventpulse/infrastructure/terraform
+          terraform init -backend=false
+          terraform validate
+
+      - name: Run Trivy IaC Security Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'config'
+          scan-ref: 'eventpulse/infrastructure'
+          exit-code: '0'
+          severity: 'CRITICAL,HIGH'
+
+  container-build-and-devsecops:
+    name: Multi-stage Docker Build & Trivy Vulnerability Scan
+    needs: [lint-and-unit-test, infrastructure-audit]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Reservation Service Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./eventpulse
+          file: ./eventpulse/services/reservation_service/Dockerfile
+          push: false
+          tags: eventpulse/reservation-service:${{ github.sha }}
+          load: true
+
+      - name: Run Trivy Container Image Vulnerability Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'eventpulse/reservation-service:${{ github.sha }}'
+          format: 'table'
+          exit-code: '0'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+
+  deploy-staging:
+    name: Kubernetes Staging Rolling Deployment
+    needs: [container-build-and-devsecops]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+
+      - name: Set up kubectl & Kustomize
+        uses: azure/setup-kubectl@v3
+
+      - name: Kustomize Build & Validate Manifests
+        run: |
+          kubectl kustomize eventpulse/infrastructure/k8s/overlays/staging

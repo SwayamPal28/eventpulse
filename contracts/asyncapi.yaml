@@ -1,0 +1,95 @@
+asyncapi: 2.6.0
+info:
+  title: EventPulse Domain Event Bus Specifications
+  version: 1.0.0
+  description: Event schemas for RabbitMQ/Kafka/SNS-SQS event choreography.
+channels:
+  ticketing.events:
+    publish:
+      message:
+        oneOf:
+          - $ref: '#/components/messages/SeatHeld'
+          - $ref: '#/components/messages/SeatReleased'
+          - $ref: '#/components/messages/SeatBooked'
+          - $ref: '#/components/messages/PaymentCompleted'
+          - $ref: '#/components/messages/TicketIssued'
+components:
+  messages:
+    SeatHeld:
+      payload:
+        type: object
+        properties:
+          event_type:
+            type: string
+            const: SeatHeldEvent
+          reservation_id:
+            type: string
+          event_id:
+            type: string
+          seat_id:
+            type: string
+          user_id:
+            type: string
+          expires_at:
+            type: string
+    SeatReleased:
+      payload:
+        type: object
+        properties:
+          event_type:
+            type: string
+            const: SeatReleasedEvent
+          event_id:
+            type: string
+          seat_id:
+            type: string
+          reason:
+            type: string
+            enum: [TTL_EXPIRED, USER_CANCELLED, PAYMENT_FAILED]
+    SeatBooked:
+      payload:
+        type: object
+        properties:
+          event_type:
+            type: string
+            const: SeatBookedEvent
+          order_id:
+            type: string
+          reservation_id:
+            type: string
+          event_id:
+            type: string
+          seat_id:
+            type: string
+          user_id:
+            type: string
+    PaymentCompleted:
+      payload:
+        type: object
+        properties:
+          event_type:
+            type: string
+            const: PaymentCompletedEvent
+          order_id:
+            type: string
+          reservation_id:
+            type: string
+          amount:
+            type: number
+          idempotency_key:
+            type: string
+    TicketIssued:
+      payload:
+        type: object
+        properties:
+          event_type:
+            type: string
+            const: TicketIssuedEvent
+          ticket_id:
+            type: string
+          order_id:
+            type: string
+          s3_url:
+            type: string
+          qr_signature:
+            type: string

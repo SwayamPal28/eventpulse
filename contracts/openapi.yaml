@@ -1,0 +1,300 @@
+openapi: 3.0.3
+info:
+  title: EventPulse - High-Concurrency Distributed Ticketing API
+  version: 1.0.0
+  description: >
+    EventPulse is an event-driven, high-concurrency distributed ticketing engine
+    designed to eliminate database contention and race conditions using CQRS,
+    Event Sourcing, Redis Lua atomic seat locks, Transactional Outbox, and Cloud-Native DevOps.
+paths:
+  /api/v1/waiting-room/enter:
+    post:
+      summary: Enter Virtual Waiting Room
+      description: Throttles flash-sale traffic using Redis Sorted Set (ZSET) timestamp ordering.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [user_id, event_id]
+              properties:
+                user_id:
+                  type: string
+                  example: "usr_student_101"
+                event_id:
+                  type: string
+                  example: "fest_rvce_2026"
+      responses:
+        '200':
+          description: Admitted or queued with position
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WaitingRoomResponse'
+
+  /api/v1/waiting-room/status/{user_id}:
+    get:
+      summary: Check Waiting Room Status
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Current queue position and admission token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WaitingRoomResponse'
+
+  /api/v1/events/{event_id}/seatmap:
+    get:
+      summary: Get Live Seatmap (CQRS Read Projection)
+      description: Returns denormalized in-memory cached seat status without hitting the write database.
+      parameters:
+        - name: event_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Seat matrix projection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeatmapResponse'
+
+  /api/v1/reservations/hold:
+    post:
+      summary: Atomic Seat Hold (Command Path)
+      description: Acquires an atomic lock using a Redis Lua script with TTL auto-expiration.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HoldSeatRequest'
+      responses:
+        '201':
+          description: Seat hold granted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HoldSeatResponse'
+        '409':
+          description: Conflict - Seat already held or booked
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/reservations/{reservation_id}/confirm:
+    post:
+      summary: Confirm and Checkout Reservation (Transactional Outbox)
+      description: Executes payment, writes to PostgreSQL Orders and Outbox table atomically.
+      parameters:
+        - name: reservation_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: Idempotency-Key
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [payment_method, amount]
+              properties:
+                payment_method:
+                  type: string
+                  example: "UPI"
+                amount:
+                  type: number
+                  example: 499.00
+      responses:
+        '200':
+          description: Reservation confirmed & ticket issuance triggered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfirmOrderResponse'
+        '400':
+          description: Invalid reservation state or hold expired
+
+  /api/v1/tickets/{ticket_id}:
+    get:
+      summary: Retrieve Digital Ticket Pass
+      parameters:
+        - name: ticket_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Signed ticket pass with QR metadata and download URL
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketResponse'
+
+  /api/v1/audit/logs:
+    get:
+      summary: Query Cassandra High-Throughput Telemetry Logs
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+      responses:
+        '200':
+          description: Chronological access and dispute audit records
+
+  /api/v1/dora/metrics:
+    get:
+      summary: Get Live DORA DevOps Metrics
+      responses:
+        '200':
+          description: Deployment frequency, Lead time, MTTR, Change failure rate
+
+components:
+  schemas:
+    WaitingRoomResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [QUEUED, ADMITTED]
+        user_id:
+          type: string
+        position:
+          type: integer
+        queue_token:
+          type: string
+        estimated_wait_seconds:
+          type: integer
+
+    HoldSeatRequest:
+      type: object
+      required: [event_id, seat_id, user_id]
+      properties:
+        event_id:
+          type: string
+        seat_id:
+          type: string
+        user_id:
+          type: string
+        hold_duration_seconds:
+          type: integer
+          default: 600
+
+    HoldSeatResponse:
+      type: object
+      properties:
+        reservation_id:
+          type: string
+        event_id:
+          type: string
+        seat_id:
+          type: string
+        user_id:
+          type: string
+        status:
+          type: string
+          example: "HELD"
+        expires_at:
+          type: string
+          format: date-time
+        ttl_seconds:
+          type: integer
+
+    ConfirmOrderResponse:
+      type: object
+      properties:
+        order_id:
+          type: string
+        reservation_id:
+          type: string
+        ticket_id:
+          type: string
+        status:
+          type: string
+          example: "CONFIRMED"
+        amount:
+          type: number
+        idempotency_key:
+          type: string
+
+    SeatmapResponse:
+      type: object
+      properties:
+        event_id:
+          type: string
+        total_seats:
+          type: integer
+        available_count:
+          type: integer
+        held_count:
+          type: integer
+        booked_count:
+          type: integer
+        seats:
+          type: array
+          items:
+            type: object
+            properties:
+              seat_id:
+                type: string
+              tier:
+                type: string
+              price:
+                type: number
+              status:
+                type: string
+                enum: [AVAILABLE, HELD, BOOKED]
+              held_by:
+                type: string
+              expires_in:
+                type: integer
+
+    TicketResponse:
+      type: object
+      properties:
+        ticket_id:
+          type: string
+        order_id:
+          type: string
+        event_id:
+          type: string
+        seat_id:
+          type: string
+        attendee_id:
+          type: string
+        qr_signature:
+          type: string
+        qr_code_data_url:
+          type: string
+        s3_url:
+          type: string
+        issued_at:
+          type: string
+
+    ErrorResponse:
+      type: object
+      properties:
+        detail:
+          type: string
+        code:
+          type: string

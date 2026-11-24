@@ -1,0 +1,143 @@
+version: '3.8'
+
+services:
+  # In-Memory Datastore for Atomic Lua Holds and Virtual Waiting Room
+  redis:
+    image: redis:7.2-alpine
+    container_name: eventpulse-redis
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--appendonly", "yes"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # Relational Database for Transactional Outbox Pattern
+  postgres:
+    image: postgres:16-alpine
+    container_name: eventpulse-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: eventpulse_db
+      POSTGRES_USER: eventpulse_user
+      POSTGRES_PASSWORD: eventpulse_secure_password_2026
+    volumes:
+      - ./init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eventpulse_user -d eventpulse_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # Message Broker for CQRS Event Choreography
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: eventpulse-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: eventpulse
+      RABBITMQ_DEFAULT_PASS: eventpulse_guest
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # High-Throughput Write-Heavy Datastore for Clickstream & Audit Telemetry
+  cassandra:
+    image: cassandra:4.1
+    container_name: eventpulse-cassandra
+    ports:
+      - "9042:9042"
+    environment:
+      CASSANDRA_CLUSTER_NAME: "EventPulseCluster"
+      CASSANDRA_ENDPOINT_SNITCH: "GossipingPropertyFileSnitch"
+      MAX_HEAP_SIZE: "512M"
+      HEAP_NEWSIZE: "128M"
+
+  # AWS Cloud Emulation (SQS, SNS, S3)
+  localstack:
+    image: localstack/localstack:3.0
+    container_name: eventpulse-localstack
+    ports:
+      - "4566:4566"
+    environment:
+      SERVICES: s3,sns,sqs
+      AWS_DEFAULT_REGION: us-east-1
+
+  # Microservice 1: Reservation Command Core (Write Path)
+  reservation-service:
+    build:
+      context: ..
+      dockerfile: services/reservation_service/Dockerfile
+    container_name: eventpulse-reservation-service
+    ports:
+      - "8001:8001"
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      DATABASE_URL: postgresql://eventpulse_user:eventpulse_secure_password_2026@postgres:5432/eventpulse_db
+      RABBITMQ_HOST: rabbitmq
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+
+  # Microservice 2: Catalog Query Read Projection (Read Path)
+  catalog-service:
+    build:
+      context: ..
+      dockerfile: services/catalog_service/Dockerfile
+    container_name: eventpulse-catalog-service
+    ports:
+      - "8002:8002"
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      RABBITMQ_HOST: rabbitmq
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  # Worker 1: S3 QR Ticket Generator
+  ticket-worker:
+    build:
+      context: ..
+      dockerfile: services/ticket_worker/Dockerfile
+    container_name: eventpulse-ticket-worker
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      AWS_ENDPOINT_URL: http://localstack:4566
+    depends_on:
+      - rabbitmq
+
+  # Worker 2: Cassandra Audit Ledger Consumer
+  ledger-worker:
+    build:
+      context: ..
+      dockerfile: services/ledger_worker/Dockerfile
+    container_name: eventpulse-ledger-worker
+    environment:
+      CASSANDRA_HOST: cassandra
+      RABBITMQ_HOST: rabbitmq
+    depends_on:
+      - rabbitmq
+
+  # API Gateway & Interactive Dashboard
+  gateway-ui:
+    build:
+      context: ..
+      dockerfile: services/reservation_service/Dockerfile
+    command: ["python", "-m", "uvicorn", "eventpulse.services.gateway_service.src.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    container_name: eventpulse-gateway-ui
+    ports:
+      - "8000:8000"
+    depends_on:
+      - reservation-service
+      - catalog-service

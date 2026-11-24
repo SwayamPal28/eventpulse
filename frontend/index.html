@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EventPulse - High-Concurrency Flash-Sale Engine</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @keyframes pulse-fast {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    .animate-pulse-fast {
+      animation: pulse-fast 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans">
+
+  <!-- Header -->
+  <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-cyan-500/30">
+          ⚡
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-xl font-bold bg-gradient-to-r from-cyan-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent">EventPulse</h1>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-cyan-950 text-cyan-400 border border-cyan-800 font-mono">IS374TFA DevOps</span>
+          </div>
+          <p class="text-xs text-slate-400">High-Concurrency Distributed Ticketing & Flash-Sale Engine · RVCE ISE</p>
+        </div>
+      </div>
+
+      <!-- Authors & Guide -->
+      <div class="text-xs text-right hidden md:block">
+        <div class="text-slate-300 font-medium">Vinay Sinnur · Vinayak Kumar Singh · Swayam Prayash Pal</div>
+        <div class="text-slate-400">Guide: Prof. B K Srinivas · Dept. of ISE</div>
+      </div>
+
+      <!-- Quick Action Controls -->
+      <div class="flex items-center gap-2">
+        <button id="btn-flash-chaos" class="px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold shadow-lg shadow-rose-600/30 flex items-center gap-1.5 transition">
+          <i class="fa-solid fa-bolt"></i> Flash-Sale Concurrency Spike
+        </button>
+        <button id="btn-reset" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs border border-slate-700 transition">
+          <i class="fa-solid fa-rotate-right"></i> Reset Testbed
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- DevOps Pipeline Architecture Pills -->
+  <div class="bg-slate-900/40 border-b border-slate-800/60 px-4 py-2">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center gap-2 text-xs">
+      <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px] mr-1">Architecture:</span>
+      <span class="px-2 py-0.5 rounded bg-emerald-950/80 border border-emerald-700/60 text-emerald-300">Redis Lua Atomicity (Sub-ms)</span>
+      <span class="px-2 py-0.5 rounded bg-blue-950/80 border border-blue-700/60 text-blue-300">CQRS Read/Write Segregation</span>
+      <span class="px-2 py-0.5 rounded bg-indigo-950/80 border border-indigo-700/60 text-indigo-300">Transactional Outbox Pattern</span>
+      <span class="px-2 py-0.5 rounded bg-purple-950/80 border border-purple-700/60 text-purple-300">Cassandra Audit Stream</span>
+      <span class="px-2 py-0.5 rounded bg-amber-950/80 border border-amber-700/60 text-amber-300">Terraform & LocalStack</span>
+      <span class="px-2 py-0.5 rounded bg-cyan-950/80 border border-cyan-700/60 text-cyan-300">Kubernetes Auto-Scaling</span>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 py-6 space-y-6">
+
+    <!-- Flash Sale Banner & Waiting Room -->
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- Event Overview -->
+      <div class="lg:col-span-2 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-900/60 border border-slate-800 p-5 shadow-xl relative overflow-hidden">
+        <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="px-2 py-0.5 text-[10px] font-bold rounded uppercase tracking-wider bg-rose-500/20 text-rose-400 border border-rose-500/30 animate-pulse">LIVE FLASH SALE</span>
+              <span class="text-xs text-slate-400 font-mono">Event ID: fest_rvce_2026</span>
+            </div>
+            <h2 id="event-title" class="text-xl md:text-2xl font-bold text-white">8th Mile Fest: High-Concurrency Live Headliner 2026</h2>
+            <p class="text-xs text-slate-400 mt-1"><i class="fa-solid fa-location-dot text-rose-400 mr-1"></i> RVCE Main Amphitheatre · Max capacity: 60 seats (Demo Allocation)</p>
+          </div>
+          <!-- Live Inventory Ticker -->
+          <div class="flex items-center gap-3">
+            <div class="text-center px-3 py-2 rounded-xl bg-slate-800/80 border border-slate-700/60">
+              <div id="stat-available" class="text-lg font-bold text-emerald-400">--</div>
+              <div class="text-[10px] text-slate-400 uppercase tracking-wider">Available</div>
+            </div>
+            <div class="text-center px-3 py-2 rounded-xl bg-slate-800/80 border border-slate-700/60">
+              <div id="stat-held" class="text-lg font-bold text-amber-400">--</div>
+              <div class="text-[10px] text-slate-400 uppercase tracking-wider">Held (Locks)</div>
+            </div>
+            <div class="text-center px-3 py-2 rounded-xl bg-slate-800/80 border border-slate-700/60">
+              <div id="stat-booked" class="text-lg font-bold text-purple-400">--</div>
+              <div class="text-[10px] text-slate-400 uppercase tracking-wider">Booked</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- User Identity Selector -->
+        <div class="mt-4 pt-4 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div class="flex items-center gap-2">
+            <span class="text-slate-400">Logged in as:</span>
+            <input type="text" id="input-user-id" value="student_swayam_128" class="bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1 text-slate-200 text-xs focus:outline-none focus:border-cyan-500 font-mono">
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-slate-400">TTL Duration:</span>
+            <select id="select-ttl" class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-slate-200 text-xs">
+              <option value="60">60 seconds (Quick Expiry Demo)</option>
+              <option value="600" selected>10 minutes (Standard Hold)</option>
+              <option value="15">15 seconds (Rapid Auto-Release)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Virtual Waiting Room Panel -->
+      <div class="rounded-2xl bg-slate-900 border border-slate-800 p-5 shadow-xl flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+              <i class="fa-solid fa-user-clock text-cyan-400"></i> Virtual Waiting Room
+            </h3>
+            <span class="text-[10px] text-cyan-400 bg-cyan-950/60 border border-cyan-800 px-2 py-0.5 rounded font-mono">Redis ZSET</span>
+          </div>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Protects ticketing services against thundering-herd flash traffic by ordering requests via timestamp and dispensing cryptographic queue passes.
+          </p>
+
+          <div id="waiting-room-status-box" class="mt-3 p-3 rounded-xl bg-slate-800/60 border border-slate-700/60 space-y-2 text-xs">
+            <div class="flex justify-between items-center">
+              <span class="text-slate-400">Queue Status:</span>
+              <span id="wr-status-badge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-950 text-emerald-400 border border-emerald-800">DIRECT ACCESS</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-slate-400">Position / Rate:</span>
+              <span id="wr-position" class="font-mono text-cyan-300">Immediate</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-slate-400">Queue Token:</span>
+              <span id="wr-token" class="font-mono text-[10px] text-slate-300 truncate max-w-[150px]">qtok_auto_active</span>
+            </div>
+          </div>
+        </div>
+
+        <button id="btn-enter-queue" class="mt-4 w-full py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold transition shadow-lg shadow-cyan-600/30">
+          <i class="fa-solid fa-ticket mr-1"></i> Join High-Traffic Queue
+        </button>
+      </div>
+
+    </section>
+
+    <!-- Interactive Seating Stage & Checkout -->
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <!-- Seating Matrix (60 seats) -->
+      <div class="lg:col-span-2 rounded-2xl bg-slate-900 border border-slate-800 p-6 shadow-xl">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+          <div>
+            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-chair text-indigo-400"></i> Interactive Seating Grid
+            </h3>
+            <p class="text-xs text-slate-400">Click any available seat to initiate an atomic Redis Lua hold</p>
+          </div>
+          <!-- Legend -->
+          <div class="flex items-center gap-3 text-xs">
+            <div class="flex items-center gap-1.5">
+              <div class="w-3.5 h-3.5 rounded bg-emerald-500/20 border border-emerald-500"></div>
+              <span class="text-slate-300 text-[11px]">Available</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <div class="w-3.5 h-3.5 rounded bg-amber-500/30 border border-amber-500 animate-pulse"></div>
+              <span class="text-slate-300 text-[11px]">Held (Lock)</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <div class="w-3.5 h-3.5 rounded bg-purple-600/40 border border-purple-500"></div>
+              <span class="text-slate-300 text-[11px]">Booked</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stage visual -->
+        <div class="mb-6 py-2 rounded-xl bg-slate-800/60 border border-slate-700/50 text-center text-xs tracking-widest text-slate-400 uppercase font-semibold">
+          🎤 STAGE / PERFORMANCE AREA
+        </div>
+
+        <!-- Seat Grid container -->
+        <div id="seat-grid" class="grid grid-cols-10 gap-2.5">
+          <!-- Populated by JavaScript -->
+          <div class="col-span-10 text-center py-10 text-slate-500 text-xs">Loading live seatmap projection...</div>
+        </div>
+
+      </div>
+
+      <!-- Selected Seat Checkout & Outbox Ledger -->
+      <div class="rounded-2xl bg-slate-900 border border-slate-800 p-5 shadow-xl flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-credit-card text-emerald-400"></i> Checkout & Outbox
+            </h3>
+            <span class="text-[10px] font-mono text-emerald-400 bg-emerald-950/60 border border-emerald-800 px-2 py-0.5 rounded">Transactional</span>
+          </div>
+
+          <div id="checkout-panel" class="space-y-3 text-xs">
+            <div class="p-3 rounded-xl bg-slate-800/60 border border-slate-700/60 space-y-1.5">
+              <div class="flex justify-between">
+                <span class="text-slate-400">Selected Seat:</span>
+                <span id="checkout-seat-id" class="font-bold text-white">None (Select on Grid)</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-400">Price Tier:</span>
+                <span id="checkout-tier" class="text-slate-300">--</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-400">Total Amount:</span>
+                <span id="checkout-amount" class="font-bold text-emerald-400 font-mono">₹ 0.00</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-400">Reservation ID:</span>
+                <span id="checkout-res-id" class="font-mono text-[10px] text-cyan-400">--</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-400">Lock Expiry:</span>
+                <span id="checkout-expiry-timer" class="font-mono text-amber-400 font-bold">--</span>
+              </div>
+            </div>
+
+            <!-- Idempotency Key -->
+            <div class="p-3 rounded-xl bg-slate-800/40 border border-slate-800 space-y-1">
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] text-slate-400">Idempotency-Key Header:</span>
+                <button id="btn-regen-key" class="text-[10px] text-cyan-400 hover:underline">Regenerate</button>
+              </div>
+              <input type="text" id="input-idempotency" readonly class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-[10px] font-mono text-slate-300">
+              <p class="text-[9px] text-slate-500">Guarantees zero double-booking even on payment network retries.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 space-y-2">
+          <button id="btn-confirm-checkout" disabled class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-800 disabled:text-slate-500 text-white text-xs font-semibold transition shadow-lg shadow-emerald-600/30">
+            <i class="fa-solid fa-lock mr-1.5"></i> Confirm & Emit Outbox Event
+          </button>
+          <div id="checkout-feedback" class="text-[11px] text-center text-slate-400"></div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- Telemetry, Cassandra Logs, and DORA Metrics -->
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <!-- Cassandra High-Throughput Telemetry Stream -->
+      <div class="lg:col-span-2 rounded-2xl bg-slate-900 border border-slate-800 p-5 shadow-xl">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+          <div>
+            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-database text-purple-400"></i> Apache Cassandra Telemetry & Audit Stream
+            </h3>
+            <p class="text-xs text-slate-400">High-write immutable event ingestion partitioned by (event_id, date) with timestamp DESC</p>
+          </div>
+          <span class="text-[10px] font-mono text-purple-400 bg-purple-950/60 border border-purple-800 px-2 py-0.5 rounded">CQL Stream</span>
+        </div>
+
+        <!-- Telemetry Table -->
+        <div class="overflow-x-auto max-h-56 overflow-y-auto rounded-xl border border-slate-800 bg-slate-950/60">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-900/90 text-[10px] text-slate-400 uppercase tracking-wider sticky top-0 border-b border-slate-800">
+              <tr>
+                <th class="py-2 px-3">Timestamp</th>
+                <th class="py-2 px-3">Seat ID</th>
+                <th class="py-2 px-3">User ID</th>
+                <th class="py-2 px-3">Attempt Type</th>
+                <th class="py-2 px-3">Outcome</th>
+                <th class="py-2 px-3">Latency</th>
+              </tr>
+            </thead>
+            <tbody id="telemetry-table-body" class="divide-y divide-slate-800/60 text-[11px] font-mono">
+              <tr><td colspan="6" class="text-center py-4 text-slate-500">Awaiting flash-sale transactions...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- DORA Metrics & DevOps Architecture Summary -->
+      <div class="rounded-2xl bg-slate-900 border border-slate-800 p-5 shadow-xl flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-chart-line text-cyan-400"></i> DORA DevOps Metrics
+            </h3>
+            <span class="text-[10px] text-cyan-400 bg-cyan-950/60 border border-cyan-800 px-2 py-0.5 rounded font-mono">Continuous Verification</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 text-xs mb-3">
+            <div class="p-2.5 rounded-xl bg-slate-800/60 border border-slate-700/60">
+              <div class="text-[10px] text-slate-400 uppercase">Deployment Freq</div>
+              <div class="text-sm font-bold text-cyan-300 font-mono mt-0.5">14 / day</div>
+              <div class="text-[9px] text-emerald-400">Elite Performance</div>
+            </div>
+            <div class="p-2.5 rounded-xl bg-slate-800/60 border border-slate-700/60">
+              <div class="text-[10px] text-slate-400 uppercase">Lead Time</div>
+              <div class="text-sm font-bold text-cyan-300 font-mono mt-0.5">18.4 min</div>
+              <div class="text-[9px] text-emerald-400">Commit to Staging</div>
+            </div>
+            <div class="p-2.5 rounded-xl bg-slate-800/60 border border-slate-700/60">
+              <div class="text-[10px] text-slate-400 uppercase">MTTR</div>
+              <div class="text-sm font-bold text-emerald-300 font-mono mt-0.5">4.2 min</div>
+              <div class="text-[9px] text-emerald-400">Self-Healing Probes</div>
+            </div>
+            <div class="p-2.5 rounded-xl bg-slate-800/60 border border-slate-700/60">
+              <div class="text-[10px] text-slate-400 uppercase">Change Failure</div>
+              <div class="text-sm font-bold text-emerald-300 font-mono mt-0.5">0.0 %</div>
+              <div class="text-[9px] text-emerald-400">Zero Regressions</div>
+            </div>
+          </div>
+
+          <div class="p-3 rounded-xl bg-slate-800/40 border border-slate-800 text-[10px] text-slate-400 space-y-1">
+            <div><strong class="text-slate-300">IaC:</strong> Terraform + LocalStack SQS/SNS/S3</div>
+            <div><strong class="text-slate-300">Orchestrator:</strong> Kubernetes (Kind/Minikube)</div>
+            <div><strong class="text-slate-300">CI/CD:</strong> GitHub Actions + Trivy Scanner</div>
+          </div>
+        </div>
+
+        <a href="/docs" target="_blank" class="mt-3 block text-center py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-cyan-400 transition">
+          <i class="fa-solid fa-book-open mr-1.5"></i> Open Interactive OpenAPI Docs
+        </a>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Ticket Pass Modal -->
+  <div id="ticket-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-700 rounded-3xl max-w-md w-full p-6 shadow-2xl relative">
+      <button id="btn-close-modal" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="text-center mb-4">
+        <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center mx-auto text-2xl mb-2">
+          <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <h3 class="text-lg font-bold text-white">Ticket Issued Successfully!</h3>
+        <p class="text-xs text-slate-400">Digitally signed & stored in LocalStack S3</p>
+      </div>
+
+      <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3 text-xs">
+        <div class="flex items-center justify-center py-2" id="ticket-qr-container">
+          <!-- QR Image -->
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 text-slate-300 border-t border-slate-800 pt-3">
+          <div><span class="text-slate-500">Ticket ID:</span> <span id="modal-tkt-id" class="font-mono text-cyan-400 font-bold"></span></div>
+          <div><span class="text-slate-500">Seat:</span> <span id="modal-seat-id" class="font-bold text-emerald-400"></span></div>
+          <div><span class="text-slate-500">Attendee:</span> <span id="modal-user-id" class="font-mono"></span></div>
+          <div><span class="text-slate-500">Amount:</span> <span id="modal-amount" class="font-mono font-bold"></span></div>
+        </div>
+
+        <div class="border-t border-slate-800 pt-2 text-[10px] text-slate-500 font-mono break-all">
+          <span class="text-slate-400">HMAC-SHA256 Sig:</span> <span id="modal-signature"></span>
+        </div>
+      </div>
+
+      <button id="btn-download-pass" class="mt-4 w-full py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white text-xs font-semibold shadow-lg shadow-indigo-600/30 transition">
+        <i class="fa-solid fa-cloud-arrow-down mr-1"></i> Download Stored S3 Pass
+      </button>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
