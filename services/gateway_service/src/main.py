@@ -103,7 +103,12 @@ def reset_demo():
     return {"status": "SUCCESS", "message": "EventPulse testbed state reset successfully."}
 
 # Static Files for Frontend
-FRONTEND_DIR = os.path.join(BASE_DIR, "eventpulse", "frontend")
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
+if os.path.exists(os.path.join(PROJECT_ROOT, "frontend")):
+    FRONTEND_DIR = os.path.join(PROJECT_ROOT, "frontend")
+else:
+    FRONTEND_DIR = os.path.join(BASE_DIR, "eventpulse", "frontend")
+
 if os.path.exists(FRONTEND_DIR):
     app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
 

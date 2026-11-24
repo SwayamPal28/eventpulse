@@ -8,10 +8,12 @@ import os
 import webbrowser
 import uvicorn
 
-# Ensure repository root is on sys.path
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-if BASE_DIR not in sys.path:
-    sys.path.insert(0, BASE_DIR)
+# Ensure repository root and parent are on sys.path
+REPO_DIR = os.path.dirname(os.path.abspath(__file__))
+PARENT_DIR = os.path.dirname(REPO_DIR)
+for path in (REPO_DIR, PARENT_DIR):
+    if path not in sys.path:
+        sys.path.insert(0, path)
 
 def main():
     print("=" * 75)

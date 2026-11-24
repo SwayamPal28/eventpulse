@@ -23,17 +23,17 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install flake8 pytest httpx
-          pip install -r eventpulse/requirements.txt
+          pip install -r requirements.txt
 
       - name: Run Flake8 Code Quality Linter
         run: |
           # Stop build if there are Python syntax errors or undefined names
-          flake8 eventpulse --count --select=E9,F63,F7,F82 --show-source --statistics
-          flake8 eventpulse --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+          flake8 services tests --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 services tests --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
       - name: Execute Automated Unit & Concurrency Tests
         run: |
-          pytest eventpulse/tests/ -v
+          pytest tests/ -v
 
   infrastructure-audit:
     name: Terraform IaC Linting & tfsec Audit
@@ -48,11 +48,11 @@ jobs:
           terraform_version: 1.6.0
 
       - name: Terraform Format Check
-        run: terraform fmt -check eventpulse/infrastructure/terraform
+        run: terraform fmt -check infrastructure/terraform
 
       - name: Terraform Validate
         run: |
-          cd eventpulse/infrastructure/terraform
+          cd infrastructure/terraform
           terraform init -backend=false
           terraform validate
 
@@ -60,7 +60,7 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: 'config'
-          scan-ref: 'eventpulse/infrastructure'
+          scan-ref: 'infrastructure'
           exit-code: '0'
           severity: 'CRITICAL,HIGH'
 
@@ -78,8 +78,8 @@ jobs:
       - name: Build Reservation Service Docker Image
         uses: docker/build-push-action@v5
         with:
-          context: ./eventpulse
-          file: ./eventpulse/services/reservation_service/Dockerfile
+          context: .
+          file: ./services/reservation_service/Dockerfile
           push: false
           tags: eventpulse/reservation-service:${{ github.sha }}
           load: true
@@ -108,4 +108,4 @@ jobs:
 
       - name: Kustomize Build & Validate Manifests
         run: |
-          kubectl kustomize eventpulse/infrastructure/k8s/overlays/staging
+          kubectl kustomize infrastructure/k8s/overlays/staging

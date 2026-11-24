@@ -3,7 +3,7 @@ kind: Kustomization
 
 namespace: ticketing-staging
 
-bases:
+resources:
   - ../../base
 
 patchesStrategicMerge:

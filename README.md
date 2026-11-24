@@ -170,19 +170,19 @@ This immediately boots:
 Run the comprehensive pytest suite verifying atomic locks, 409 conflict handling, idempotency, and CQRS updates:
 
 ```powershell
-python -m pytest eventpulse/tests/test_eventpulse.py -v
+python -m pytest tests/test_eventpulse.py -v
 ```
 
 Output:
 ```
 ============================= test session starts =============================
-eventpulse/tests/test_eventpulse.py::test_health_probes PASSED           [ 14%]
-eventpulse/tests/test_eventpulse.py::test_cqrs_seatmap_query PASSED      [ 28%]
-eventpulse/tests/test_eventpulse.py::test_atomic_seat_hold PASSED        [ 42%]
-eventpulse/tests/test_eventpulse.py::test_conflict_rejection_prevents_race_conditions PASSED [ 57%]
-eventpulse/tests/test_eventpulse.py::test_transactional_outbox_checkout_and_idempotency PASSED [ 71%]
-eventpulse/tests/test_eventpulse.py::test_virtual_waiting_room_fifo PASSED [ 85%]
-eventpulse/tests/test_eventpulse.py::test_cassandra_telemetry_audit PASSED [100%]
+tests/test_eventpulse.py::test_health_probes PASSED                      [ 14%]
+tests/test_eventpulse.py::test_cqrs_seatmap_query PASSED                 [ 28%]
+tests/test_eventpulse.py::test_atomic_seat_hold PASSED                   [ 42%]
+tests/test_eventpulse.py::test_conflict_rejection_prevents_race_conditions PASSED [ 57%]
+tests/test_eventpulse.py::test_transactional_outbox_checkout_and_idempotency PASSED [ 71%]
+tests/test_eventpulse.py::test_virtual_waiting_room_fifo PASSED          [ 85%]
+tests/test_eventpulse.py::test_cassandra_telemetry_audit PASSED          [100%]
 ============================== 7 passed in 1.43s ==============================
 ```
 
@@ -194,7 +194,7 @@ Prove that under extreme traffic, **exactly 1 user wins the hold** while all con
 
 ```powershell
 # In another terminal while start_demo.py is running:
-python eventpulse/load_tests/simulate_concurrency.py
+python load_tests/simulate_concurrency.py
 ```
 
 Benchmark Output:

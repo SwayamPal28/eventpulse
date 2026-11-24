@@ -3,29 +3,160 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EventPulse - DevOps Evaluation Phase 1 Presentation</title>
+  <title>EventPulse - DevOps Evaluation Phase 1 Presentation (RVCE)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    /* Default slide display */
     .slide { display: none; }
     .slide.active { display: flex; }
+
+    /* Print styles for generating clean PDF */
+    @media print {
+      @page {
+        size: A4 landscape;
+        margin: 0.5cm;
+      }
+      body {
+        background-color: #ffffff !important;
+        color: #0f172a !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      header, footer.no-print, #nav-controls {
+        display: none !important;
+      }
+      main {
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .slide {
+        display: flex !important;
+        page-break-after: always !important;
+        break-after: page !important;
+        min-height: 96vh !important;
+        height: 96vh !important;
+        box-sizing: border-box !important;
+        position: relative !important;
+        background: #ffffff !important;
+        color: #0f172a !important;
+        border: none !important;
+        padding: 1.5rem !important;
+        justify-content: space-between !important;
+      }
+      .slide:last-child {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+      }
+      .dark-card {
+        background: #f8fafc !important;
+        border: 1px solid #cbd5e1 !important;
+        color: #0f172a !important;
+      }
+      .dark-card * {
+        color: #0f172a !important;
+      }
+      .dark-table {
+        background: #ffffff !important;
+        border: 1px solid #94a3b8 !important;
+        color: #0f172a !important;
+      }
+      .dark-table th {
+        background: #f1f5f9 !important;
+        color: #0f172a !important;
+        border: 1px solid #cbd5e1 !important;
+      }
+      .dark-table td {
+        border: 1px solid #e2e8f0 !important;
+        color: #1e293b !important;
+      }
+      .text-contrast {
+        color: #0f172a !important;
+      }
+    }
+
+    /* Academic RVCE White Theme styles */
+    body.rvce-theme {
+      background-color: #ffffff;
+      color: #0f172a;
+    }
+    body.rvce-theme header {
+      background-color: #f8fafc;
+      border-color: #e2e8f0;
+    }
+    body.rvce-theme .dark-card {
+      background-color: #f8fafc;
+      border-color: #e2e8f0;
+      color: #0f172a;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    body.rvce-theme .dark-card h3,
+    body.rvce-theme .dark-card div.font-bold,
+    body.rvce-theme .dark-card p {
+      color: #1e293b;
+    }
+    body.rvce-theme .dark-table {
+      background-color: #ffffff;
+      border-color: #cbd5e1;
+    }
+    body.rvce-theme .dark-table thead {
+      background-color: #f1f5f9;
+      color: #0f172a;
+    }
+    body.rvce-theme .dark-table th {
+      color: #0f172a;
+      border-color: #cbd5e1;
+    }
+    body.rvce-theme .dark-table td {
+      color: #1e293b;
+      border-color: #e2e8f0;
+    }
+    body.rvce-theme .slide-title {
+      color: #0f172a;
+    }
+    body.rvce-theme .motto-tag {
+      color: #475569;
+    }
+    body.rvce-theme .page-num {
+      color: #334155 !important;
+      font-weight: 700;
+    }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between font-sans select-none">
+<body id="page-body" class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between font-sans select-none transition-colors duration-200">
 
-  <!-- Top Navigation & Progress -->
-  <header class="border-b border-slate-800 bg-slate-900/90 px-6 py-3 flex items-center justify-between">
+  <!-- Top Navigation & Presentation Controls -->
+  <header class="border-b border-slate-800 bg-slate-900/90 px-6 py-3 flex items-center justify-between sticky top-0 z-50">
     <div class="flex items-center gap-3">
-      <span class="text-xs px-2.5 py-1 rounded bg-indigo-950 text-indigo-400 border border-indigo-800 font-mono font-bold">RVCE ISE · IS374TFA</span>
-      <span class="text-sm font-semibold text-slate-300">EventPulse: Evaluation Phase - 1</span>
+      <div class="w-8 h-8 rounded-full bg-rose-600/20 border border-rose-500/40 flex items-center justify-center font-bold text-xs text-rose-400">
+        RV
+      </div>
+      <div>
+        <span class="text-xs px-2.5 py-0.5 rounded bg-indigo-950 text-indigo-400 border border-indigo-800 font-mono font-bold mr-2">IS374TFA · DevOps</span>
+        <span class="text-sm font-semibold text-slate-200">EventPulse: Evaluation Phase - 1</span>
+      </div>
     </div>
-    <div class="flex items-center gap-4 text-xs font-mono">
-      <span id="slide-indicator" class="text-cyan-400 font-bold">Slide 1 / 6</span>
+    
+    <div id="nav-controls" class="flex items-center gap-3 text-xs font-mono">
+      <!-- Theme Switcher -->
+      <button id="theme-btn" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center gap-1.5" title="Switch between Dark Tech and RVCE Academic themes">
+        <i class="fa-solid fa-circle-half-stroke"></i>
+        <span id="theme-label">RVCE Academic Theme</span>
+      </button>
+
+      <!-- Print to PDF button -->
+      <button onclick="window.print()" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold transition flex items-center gap-1.5 shadow-sm" title="Print all slides cleanly to PDF">
+        <i class="fa-solid fa-file-pdf"></i>
+        <span>Print / Save PDF</span>
+      </button>
+
+      <span id="slide-indicator" class="text-cyan-400 font-bold px-2">Slide 1 / 6</span>
       <div class="flex items-center gap-1.5">
-        <button id="prev-btn" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition">
+        <button id="prev-btn" class="px-2.5 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition">
           <i class="fa-solid fa-arrow-left"></i>
         </button>
-        <button id="next-btn" class="px-2.5 py-1 rounded bg-cyan-600 hover:bg-cyan-500 text-white font-semibold transition">
+        <button id="next-btn" class="px-2.5 py-1.5 rounded bg-cyan-600 hover:bg-cyan-500 text-white font-semibold transition">
           <i class="fa-solid fa-arrow-right"></i>
         </button>
       </div>
@@ -33,109 +164,143 @@
   </header>
 
   <!-- Presentation Slides Container -->
-  <main class="flex-1 flex items-center justify-center p-6 md:p-12 max-w-6xl mx-auto w-full">
+  <main class="flex-1 flex items-center justify-center p-6 md:p-10 max-w-6xl mx-auto w-full">
 
     <!-- Slide 1: Title Slide -->
-    <div class="slide active flex-col items-center justify-center text-center space-y-6 w-full animate-fade-in">
-      <div class="text-xs font-bold tracking-widest uppercase text-cyan-400 bg-cyan-950/60 border border-cyan-800 px-4 py-1.5 rounded-full inline-block">
-        Department of Information Science & Engineering · Academic Year 2026-27
+    <div class="slide active flex-col justify-between w-full min-h-[580px] p-6 animate-fade-in relative">
+      <div class="flex items-center justify-between border-b border-slate-800/80 pb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-rose-500 to-indigo-600 flex items-center justify-center text-white font-black text-sm shadow-md">
+            RV
+          </div>
+          <div>
+            <div class="text-xs font-bold uppercase tracking-widest text-slate-400">RV College of Engineering®</div>
+            <div class="text-[11px] text-slate-500">Autonomous Institution affiliated to VTU, Belagavi</div>
+          </div>
+        </div>
+        <div class="text-xs italic font-serif text-slate-400 motto-tag">"Go, change the world" ®</div>
       </div>
-      <div class="text-rose-500 font-bold text-lg md:text-xl">
-        Development and Operations (DevOps) (IS374TFA)
-      </div>
-      <h1 class="text-3xl md:text-5xl font-extrabold bg-gradient-to-r from-cyan-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent max-w-4xl leading-tight">
-        EventPulse: An Event-Driven, High-Concurrency Distributed Ticketing & Flash-Sale Engine
-      </h1>
-      <div class="text-slate-400 text-sm font-mono tracking-wide">
-        Evaluation - Phase - 1
+
+      <div class="my-auto text-center space-y-4 py-6">
+        <div class="text-xs font-bold tracking-widest uppercase text-cyan-400 bg-cyan-950/60 border border-cyan-800/60 px-4 py-1.5 rounded-full inline-block">
+          DEPARTMENT OF INFORMATION SCIENCE & ENGINEERING
+        </div>
+        <div class="text-rose-500 font-bold text-lg md:text-xl tracking-tight">
+          Development and Operations (DevOps) (IS374TFA)
+        </div>
+        <h1 class="text-3xl md:text-5xl font-black bg-gradient-to-r from-cyan-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent max-w-4xl mx-auto leading-tight slide-title">
+          EventPulse: An Event-Driven, High-Concurrency Distributed Ticketing & Flash-Sale Engine
+        </h1>
+        <div class="text-slate-400 text-sm font-mono tracking-wide">
+          Evaluation - Phase - 1 · Academic Year – 2026-27
+        </div>
       </div>
       
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl w-full pt-8 text-left border-t border-slate-800/80">
-        <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800">
-          <div class="text-[11px] uppercase tracking-wider text-slate-500 font-bold mb-1">Carried Out By:</div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl w-full mx-auto pt-4 border-t border-slate-800/80 text-left">
+        <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 dark-card">
+          <div class="text-[11px] uppercase tracking-wider text-slate-400 font-bold mb-2 flex items-center gap-1.5">
+            <i class="fa-solid fa-users text-cyan-400"></i> Carried Out By:
+          </div>
           <div class="text-sm font-medium text-slate-200">Vinay Sinnur <span class="text-xs text-slate-400 font-mono">(1RV23IS138)</span></div>
           <div class="text-sm font-medium text-slate-200">Vinayak Kumar Singh <span class="text-xs text-slate-400 font-mono">(1RV23IS139)</span></div>
           <div class="text-sm font-medium text-slate-200">Swayam Prayash Pal <span class="text-xs text-slate-400 font-mono">(1RV23IS128)</span></div>
         </div>
-        <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 flex flex-col justify-center">
-          <div class="text-[11px] uppercase tracking-wider text-slate-500 font-bold mb-1">Guide:</div>
+        <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 dark-card flex flex-col justify-center">
+          <div class="text-[11px] uppercase tracking-wider text-slate-400 font-bold mb-1 flex items-center gap-1.5">
+            <i class="fa-solid fa-user-tie text-indigo-400"></i> Guide:
+          </div>
           <div class="text-base font-bold text-white">B K Srinivas</div>
-          <div class="text-xs text-slate-400">Assistant Professor, Department of ISE</div>
-          <div class="text-xs italic text-cyan-400 mt-1">"Go, change the world"</div>
+          <div class="text-xs text-slate-400">Assistant Professor, Information Science Engineering, RVCE</div>
         </div>
+      </div>
+
+      <div class="flex justify-between items-center text-xs text-slate-500 pt-2 font-mono">
+        <span>DevOps (IS374TFA) Phase 1 Evaluation</span>
+        <span class="font-bold text-slate-400 page-num">1</span>
       </div>
     </div>
 
     <!-- Slide 2: Topic Relevance to Course -->
-    <div class="slide flex-col justify-center space-y-6 w-full">
-      <div class="border-b border-slate-800 pb-3 flex justify-between items-end">
-        <div>
-          <span class="text-xs text-cyan-400 font-bold uppercase tracking-wider">Evaluation Section 1 (5 Marks)</span>
-          <h2 class="text-2xl md:text-3xl font-bold text-white mt-1">Topic Relevance to the Course</h2>
+    <div class="slide flex-col justify-between w-full min-h-[580px] p-6 relative">
+      <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-rose-600/20 border border-rose-500/40 flex items-center justify-center font-bold text-xs text-rose-400">RV</div>
+          <div>
+            <span class="text-[11px] text-cyan-400 font-bold uppercase tracking-wider">Evaluation Section 1 (5 Marks)</span>
+            <h2 class="text-2xl md:text-3xl font-extrabold text-white slide-title">Topic Relevance to the Course</h2>
+          </div>
         </div>
-        <span class="text-xs italic text-slate-400">Go, change the world</span>
+        <span class="text-xs italic font-serif text-slate-400 motto-tag">"Go, change the world"</span>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs md:text-sm">
-        <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-1">
-          <div class="font-bold text-emerald-400 flex items-center gap-2">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-auto py-4 text-xs md:text-sm">
+        <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 dark-card space-y-1.5">
+          <div class="font-bold text-emerald-400 flex items-center gap-2 text-sm">
             <i class="fa-solid fa-cube"></i> Immutable Containerization
           </div>
           <p class="text-slate-300 leading-relaxed text-xs">
             Multi-stage Docker builds package polyglot services consistently, eliminating environment drift between development and production.
           </p>
         </div>
-        <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-1">
-          <div class="font-bold text-amber-400 flex items-center gap-2">
+        <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 dark-card space-y-1.5">
+          <div class="font-bold text-amber-400 flex items-center gap-2 text-sm">
             <i class="fa-solid fa-code-branch"></i> Infrastructure as Code (IaC)
           </div>
           <p class="text-slate-300 leading-relaxed text-xs">
-            Terraform & LocalStack automate repeatable provisioning of message queues (SQS), notification topics (SNS), and cloud object storage (S3).
+            Terraform & LocalStack automate repeatable provisioning of queues (SQS), topics (SNS), and storage (S3) declaratively without manual console setup.
           </p>
         </div>
-        <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-1">
-          <div class="font-bold text-cyan-400 flex items-center gap-2">
+        <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 dark-card space-y-1.5">
+          <div class="font-bold text-cyan-400 flex items-center gap-2 text-sm">
             <i class="fa-solid fa-shield-halved"></i> Automated CI/CD & DevSecOps
           </div>
           <p class="text-slate-300 leading-relaxed text-xs">
-            GitHub Actions pipelines run automated unit tests, linting, and Trivy container vulnerability security scans on commit.
+            GitHub Actions pipelines run automated testing, linting, and Trivy container vulnerability scans before artifacts are promoted to staging.
           </p>
         </div>
-        <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-1">
-          <div class="font-bold text-indigo-400 flex items-center gap-2">
+        <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 dark-card space-y-1.5">
+          <div class="font-bold text-indigo-400 flex items-center gap-2 text-sm">
             <i class="fa-solid fa-network-wired"></i> Kubernetes Orchestration
           </div>
           <p class="text-slate-300 leading-relaxed text-xs">
-            Kind/Minikube cluster with Horizontal Pod Autoscaling (HPA), self-healing liveness/readiness probes, and zero-downtime rolling updates.
+            Kind/Minikube enables auto-scaling (HPA), self-healing liveness and readiness health probes, and zero-downtime rolling updates.
           </p>
         </div>
-        <div class="md:col-span-2 p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-1">
-          <div class="font-bold text-purple-400 flex items-center gap-2">
-            <i class="fa-solid fa-chart-line"></i> Continuous Verification & DORA Metrics
+        <div class="md:col-span-2 p-4 rounded-xl bg-slate-900/90 border border-slate-800 dark-card space-y-1.5">
+          <div class="font-bold text-purple-400 flex items-center gap-2 text-sm">
+            <i class="fa-solid fa-chart-line"></i> Continuous Verification
           </div>
           <p class="text-slate-300 leading-relaxed text-xs">
-            Automated k6 and async Python stress tests validate flash-sale resilience (0 double bookings under concurrency) while tracking DORA metrics (Deployment Frequency, Lead Time, MTTR, Change Failure Rate).
+            Automated k6/JMeter load tests validate flash-sale resilience (sub-millisecond hold latency, 0 double-bookings) and track DORA metrics (Lead Time, MTTR, Deployment Frequency).
           </p>
         </div>
+      </div>
+
+      <div class="flex justify-between items-center text-xs text-slate-500 pt-2 font-mono border-t border-slate-800/80">
+        <span>DevOps (IS374TFA) Phase 1 Evaluation</span>
+        <span class="font-bold text-cyan-400 page-num">2</span>
       </div>
     </div>
 
     <!-- Slide 3: Literature Survey -->
-    <div class="slide flex-col justify-center space-y-4 w-full">
-      <div class="border-b border-slate-800 pb-2 flex justify-between items-end">
-        <div>
-          <span class="text-xs text-cyan-400 font-bold uppercase tracking-wider">Evaluation Section 2 (5 Marks)</span>
-          <h2 class="text-2xl md:text-3xl font-bold text-white mt-1">Existing Approaches / Literature Review</h2>
+    <div class="slide flex-col justify-between w-full min-h-[580px] p-6 relative">
+      <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-rose-600/20 border border-rose-500/40 flex items-center justify-center font-bold text-xs text-rose-400">RV</div>
+          <div>
+            <span class="text-[11px] text-cyan-400 font-bold uppercase tracking-wider">Evaluation Section 2 (5 Marks)</span>
+            <h2 class="text-2xl md:text-3xl font-extrabold text-white slide-title">Existing Approaches / Literature Review</h2>
+          </div>
         </div>
-        <span class="text-xs italic text-slate-400">Go, change the world</span>
+        <span class="text-xs italic font-serif text-slate-400 motto-tag">"Go, change the world"</span>
       </div>
 
-      <div class="overflow-x-auto rounded-xl border border-slate-800 bg-slate-900">
+      <div class="overflow-x-auto rounded-xl border border-slate-800 bg-slate-900/90 dark-table my-auto py-1">
         <table class="w-full text-left text-xs">
           <thead class="bg-slate-800/80 text-[11px] text-cyan-300 uppercase tracking-wider border-b border-slate-700">
             <tr>
-              <th class="py-2.5 px-4 w-1/3">Research Paper Title & Authors</th>
-              <th class="py-2.5 px-4">Relevance to Our Project (EventPulse)</th>
+              <th class="py-2.5 px-4 w-1/3 font-bold">Research Paper Title & Authors</th>
+              <th class="py-2.5 px-4 font-bold">Relevance to Our Project (EventPulse)</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-800/80 leading-relaxed">
@@ -160,7 +325,7 @@
                 "Microservices: Yesterday, Today, and Tomorrow"<br><span class="text-slate-400 font-normal italic">by Nicola Dragoni, et al.</span>
               </td>
               <td class="py-2.5 px-4 text-slate-300">
-                Provides theoretical foundation for Bounded Contexts, mathematically justifying why isolating read-heavy seatmaps from write-heavy reservation engines prevents crashes.
+                Provides theoretical foundation for our Bounded Contexts, mathematically justifying why isolating the read-heavy seatmap from the write-heavy reservation engine prevents system crashes.
               </td>
             </tr>
             <tr>
@@ -182,75 +347,91 @@
           </tbody>
         </table>
       </div>
+
+      <div class="flex justify-between items-center text-xs text-slate-500 pt-2 font-mono border-t border-slate-800/80">
+        <span>DevOps (IS374TFA) Phase 1 Evaluation</span>
+        <span class="font-bold text-cyan-400 page-num">3</span>
+      </div>
     </div>
 
     <!-- Slide 4: Real-World Applications -->
-    <div class="slide flex-col justify-center space-y-6 w-full">
-      <div class="border-b border-slate-800 pb-3 flex justify-between items-end">
-        <div>
-          <span class="text-xs text-cyan-400 font-bold uppercase tracking-wider">Evaluation Section 3 (5 Marks)</span>
-          <h2 class="text-2xl md:text-3xl font-bold text-white mt-1">Application of the Topic in Real World</h2>
+    <div class="slide flex-col justify-between w-full min-h-[580px] p-6 relative">
+      <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-rose-600/20 border border-rose-500/40 flex items-center justify-center font-bold text-xs text-rose-400">RV</div>
+          <div>
+            <span class="text-[11px] text-cyan-400 font-bold uppercase tracking-wider">Evaluation Section 3 (5 Marks)</span>
+            <h2 class="text-2xl md:text-3xl font-extrabold text-white slide-title">Application of the Topic</h2>
+          </div>
         </div>
-        <span class="text-xs italic text-slate-400">Go, change the world</span>
+        <span class="text-xs italic font-serif text-slate-400 motto-tag">"Go, change the world"</span>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 my-auto py-4">
+        <div class="p-5 rounded-xl bg-slate-900/90 border border-slate-800 dark-card space-y-2">
           <div class="text-base font-bold text-white flex items-center gap-2">
-            <span class="w-8 h-8 rounded-lg bg-rose-500/20 text-rose-400 flex items-center justify-center text-sm">🎟️</span>
+            <span class="w-8 h-8 rounded-lg bg-rose-500/20 text-rose-400 flex items-center justify-center text-sm font-bold">🎟️</span>
             Live Entertainment & Ticketing
           </div>
           <p class="text-xs text-slate-300 leading-relaxed">
-            Platforms like <strong>BookMyShow</strong> and <strong>Ticketmaster</strong> handling massive concert and sports stadium flash-sale surges without overselling seats or dropping user sessions.
+            Platforms like <strong>BookMyShow</strong> and <strong>Ticketmaster</strong> handling concert and sports flash-sale surges without database lock contention.
           </p>
         </div>
-        <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
+        <div class="p-5 rounded-xl bg-slate-900/90 border border-slate-800 dark-card space-y-2">
           <div class="text-base font-bold text-white flex items-center gap-2">
-            <span class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center text-sm">🛍️</span>
+            <span class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center text-sm font-bold">🛍️</span>
             E-Commerce Flash Sales
           </div>
           <p class="text-xs text-slate-300 leading-relaxed">
-            <strong>Amazon Prime Day</strong> and <strong>Flipkart Big Billion Days</strong> managing strictly limited SKU inventory with temporary cart hold timers and asynchronous checkout finalization.
+            <strong>Amazon Prime Day</strong> and <strong>Flipkart Big Billion Days</strong> managing limited SKU inventory and cart holds with TTL expirations.
           </p>
         </div>
-        <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
+        <div class="p-5 rounded-xl bg-slate-900/90 border border-slate-800 dark-card space-y-2">
           <div class="text-base font-bold text-white flex items-center gap-2">
-            <span class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-sm">🚆</span>
+            <span class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-sm font-bold">🚆</span>
             Travel & Transit Booking
           </div>
           <p class="text-xs text-slate-300 leading-relaxed">
-            <strong>IRCTC Tatkal</strong> and airline reservation windows enforcing strict payment hold timeouts without causing database deadlock cascades.
+            <strong>IRCTC Tatkal</strong> and airline reservation windows enforcing strict payment hold timeouts without cascading connection pool exhaustion.
           </p>
         </div>
-        <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-2">
+        <div class="p-5 rounded-xl bg-slate-900/90 border border-slate-800 dark-card space-y-2">
           <div class="text-base font-bold text-white flex items-center gap-2">
-            <span class="w-8 h-8 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-sm">🎓</span>
+            <span class="w-8 h-8 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-sm font-bold">🎓</span>
             University & Campus Portals
           </div>
           <p class="text-xs text-slate-300 leading-relaxed">
-            High-concurrency college fest registrations (e.g., <strong>RVCE 8th Mile</strong>), inter-tier hackathons, and hostel room allotting where thousands of students submit at 00:00.
+            High-concurrency college fest registrations (e.g. <strong>RVCE 8th Mile</strong>), hackathon sign-ups, and hostel room allotments where thousands hit simultaneously.
           </p>
         </div>
+      </div>
+
+      <div class="flex justify-between items-center text-xs text-slate-500 pt-2 font-mono border-t border-slate-800/80">
+        <span>DevOps (IS374TFA) Phase 1 Evaluation</span>
+        <span class="font-bold text-cyan-400 page-num">4</span>
       </div>
     </div>
 
     <!-- Slide 5: Tools Required -->
-    <div class="slide flex-col justify-center space-y-4 w-full">
-      <div class="border-b border-slate-800 pb-2 flex justify-between items-end">
-        <div>
-          <span class="text-xs text-cyan-400 font-bold uppercase tracking-wider">Evaluation Section 4 (5 Marks)</span>
-          <h2 class="text-2xl md:text-3xl font-bold text-white mt-1">Tools Required for Demonstration</h2>
+    <div class="slide flex-col justify-between w-full min-h-[580px] p-6 relative">
+      <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-rose-600/20 border border-rose-500/40 flex items-center justify-center font-bold text-xs text-rose-400">RV</div>
+          <div>
+            <span class="text-[11px] text-cyan-400 font-bold uppercase tracking-wider">Evaluation Section 4 (5 Marks)</span>
+            <h2 class="text-2xl md:text-3xl font-extrabold text-white slide-title">Tools Required</h2>
+          </div>
         </div>
-        <span class="text-xs italic text-slate-400">Go, change the world</span>
+        <span class="text-xs italic font-serif text-slate-400 motto-tag">"Go, change the world"</span>
       </div>
 
-      <div class="overflow-x-auto rounded-xl border border-slate-800 bg-slate-900">
+      <div class="overflow-x-auto rounded-xl border border-slate-800 bg-slate-900/90 dark-table my-auto py-1">
         <table class="w-full text-left text-xs">
           <thead class="bg-slate-800/80 text-[11px] text-cyan-300 uppercase tracking-wider border-b border-slate-700">
             <tr>
-              <th class="py-2.5 px-4 w-1/4">Category</th>
-              <th class="py-2.5 px-4 w-1/3">Tool / Technology</th>
-              <th class="py-2.5 px-4">Purpose in Demonstration</th>
+              <th class="py-2.5 px-4 w-1/4 font-bold">Category</th>
+              <th class="py-2.5 px-4 w-1/3 font-bold">Tool / Technology</th>
+              <th class="py-2.5 px-4 font-bold">Purpose in Demonstration</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-800/80 leading-relaxed">
@@ -271,7 +452,7 @@
             </tr>
             <tr>
               <td class="py-2 px-4 font-semibold text-white">Concurrency & Caching</td>
-              <td class="py-2 px-4 font-mono text-cyan-300">Redis (Lua Scripting)</td>
+              <td class="py-2 px-4 font-mono text-cyan-300">Redis</td>
               <td class="py-2 px-4 text-slate-300">Atomic, sub-millisecond seat holding (Lua scripts) and rate limiting.</td>
             </tr>
             <tr>
@@ -292,28 +473,55 @@
           </tbody>
         </table>
       </div>
+
+      <div class="flex justify-between items-center text-xs text-slate-500 pt-2 font-mono border-t border-slate-800/80">
+        <span>DevOps (IS374TFA) Phase 1 Evaluation</span>
+        <span class="font-bold text-cyan-400 page-num">5</span>
+      </div>
     </div>
 
-    <!-- Slide 6: Thank You & Live Demo Transition -->
-    <div class="slide flex-col items-center justify-center text-center space-y-6 w-full">
-      <div class="text-4xl md:text-6xl font-extrabold text-white">
-        Thank you
+    <!-- Slide 6: Thank You -->
+    <div class="slide flex-col justify-between w-full min-h-[580px] p-6 relative">
+      <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-rose-600/20 border border-rose-500/40 flex items-center justify-center font-bold text-xs text-rose-400">RV</div>
+          <div>
+            <div class="text-xs font-bold uppercase tracking-widest text-slate-400">RV College of Engineering®</div>
+            <div class="text-[11px] text-slate-500">Department of Information Science & Engineering</div>
+          </div>
+        </div>
+        <span class="text-xs italic font-serif text-slate-400 motto-tag">"Go, change the world"</span>
       </div>
-      <p class="text-cyan-400 font-mono text-sm max-w-xl">
-        EventPulse: Live interactive demonstration of Sub-millisecond Atomic Locking, CQRS Segregation, and Zero Double-Bookings under Concurrency.
-      </p>
-      <div class="pt-6">
-        <a href="http://localhost:8000" target="_blank" class="px-6 py-3 rounded-2xl bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white font-bold text-sm shadow-xl shadow-cyan-500/20 transition flex items-center gap-2 mx-auto">
-          <i class="fa-solid fa-play"></i> Launch EventPulse Interactive Demo Portal
-        </a>
+
+      <div class="my-auto text-center space-y-6 py-10">
+        <div class="text-5xl md:text-7xl font-black text-white slide-title tracking-tight">
+          Thank you
+        </div>
+        <p class="text-cyan-400 font-mono text-sm max-w-xl mx-auto">
+          ⚡ EventPulse: Live Interactive Microservices Testbed demonstrating Zero Database Contention, Eventual Consistency, and Automated Cloud-Native Delivery.
+        </p>
+        <div class="pt-4 flex justify-center gap-4">
+          <a href="http://localhost:8000" target="_blank" class="px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white font-bold text-sm shadow-xl shadow-cyan-500/20 transition flex items-center gap-2">
+            <i class="fa-solid fa-play"></i> Open Interactive Demo Portal (:8000)
+          </a>
+          <a href="http://localhost:8000/docs" target="_blank" class="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold text-sm transition flex items-center gap-2">
+            <i class="fa-solid fa-book"></i> OpenAPI 3.0 Docs
+          </a>
+        </div>
+      </div>
+
+      <div class="flex justify-between items-center text-xs text-slate-500 pt-2 font-mono border-t border-slate-800/80">
+        <span>DevOps (IS374TFA) Phase 1 Evaluation</span>
+        <span class="font-bold text-cyan-400 page-num">6</span>
       </div>
     </div>
 
   </main>
 
-  <!-- Footer -->
-  <footer class="border-t border-slate-800 bg-slate-900/60 px-6 py-3 text-center text-xs text-slate-500">
-    Use <kbd class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">←</kbd> and <kbd class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">→</kbd> arrow keys to navigate slides.
+  <!-- Footer Navigation Info -->
+  <footer class="no-print border-t border-slate-800 bg-slate-900/60 px-6 py-3 text-center text-xs text-slate-500 flex justify-between items-center max-w-6xl mx-auto w-full">
+    <span>Use <kbd class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">←</kbd> and <kbd class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">→</kbd> to navigate slides.</span>
+    <span>Click <strong>Print / Save PDF</strong> to export complete deck without slide-number bugs.</span>
   </footer>
 
   <script>
@@ -335,6 +543,25 @@
       if (e.key === "ArrowRight" || e.key === " ") showSlide(currentSlide + 1);
       if (e.key === "ArrowLeft") showSlide(currentSlide - 1);
     });
+
+    // Theme Toggle Handler
+    let isRvceTheme = false;
+    const themeBtn = document.getElementById("theme-btn");
+    const themeLabel = document.getElementById("theme-label");
+    const pageBody = document.getElementById("page-body");
+
+    themeBtn.onclick = () => {
+      isRvceTheme = !isRvceTheme;
+      if (isRvceTheme) {
+        pageBody.classList.remove("bg-slate-950", "text-slate-100");
+        pageBody.classList.add("rvce-theme");
+        themeLabel.textContent = "Dark Tech Theme";
+      } else {
+        pageBody.classList.remove("rvce-theme");
+        pageBody.classList.add("bg-slate-950", "text-slate-100");
+        themeLabel.textContent = "RVCE Academic Theme";
+      }
+    };
   </script>
 </body>
 </html>

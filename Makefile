@@ -15,7 +15,7 @@ run-local:
 	python start_demo.py
 
 test:
-	python -m pytest eventpulse/tests/test_eventpulse.py -v
+	python -m pytest tests/test_eventpulse.py -v
 
 docker-up:
 	docker compose -f umbrella/docker-compose.yml up --build -d

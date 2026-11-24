@@ -25,7 +25,11 @@ QR_SECRET = "eventpulse_qr_hmac_secret_2026"
 ISSUED_TICKETS: Dict[str, Dict[str, Any]] = {}
 
 # S3 storage mock directory
-S3_BUCKET_DIR = os.path.join(BASE_DIR, "eventpulse", "data", "s3_tickets")
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
+if os.path.exists(os.path.join(PROJECT_ROOT, "data")):
+    S3_BUCKET_DIR = os.path.join(PROJECT_ROOT, "data", "s3_tickets")
+else:
+    S3_BUCKET_DIR = os.path.join(BASE_DIR, "eventpulse", "data", "s3_tickets")
 os.makedirs(S3_BUCKET_DIR, exist_ok=True)
 
 def generate_qr_svg(data_payload: str) -> str:
