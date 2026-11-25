@@ -1,29 +1,14 @@
-# EventPulse: Evaluation Phase - 1 Presentation Deck
-
-**Institution:** Department of Information Science & Engineering, RV College of Engineering®  
-**Course:** Development and Operations (DevOps) (`IS374TFA`)  
-**Academic Year:** 2026–27  
-**Motto:** *"Go, change the world"* ®  
+# EventPulse: Presentation Deck
 
 **Project Title:**  
 **EventPulse: An Event-Driven, High-Concurrency Distributed Ticketing & Flash-Sale Engine**  
 
-**Carried Out By:**
-- **Vinay Sinnur** (`1RV23IS138`)
-- **Vinayak Kumar Singh** (`1RV23IS139`)
-- **Swayam Prayash Pal** (`1RV23IS128`)
-
-**Guide:**
-- **Assistant Professor B K Srinivas**, Department of Information Science & Engineering, RVCE
-
 ---
 
 ## Slide 1: Title Slide (Page 1 / 6)
-- **Course:** Development and Operations (DevOps) (`IS374TFA`)
-- **Evaluation:** Phase - 1
-- **Academic Year:** 2026–27
-- **Project:** EventPulse: An Event-Driven, High-Concurrency Distributed Ticketing & Flash-Sale Engine
-- **Department:** Department of Information Science & Engineering, RVCE
+- **Title:** EventPulse: An Event-Driven, High-Concurrency Distributed Ticketing & Flash-Sale Engine
+- **Focus:** Sub-Millisecond Atomic Holds · CQRS Segregation · Zero Race Conditions
+- **Domain:** High-Concurrency Distributed Systems Architecture
 
 ---
 

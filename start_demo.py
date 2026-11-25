@@ -18,9 +18,6 @@ for path in (REPO_DIR, PARENT_DIR):
 def main():
     print("=" * 75)
     print("⚡ EventPulse: High-Concurrency Distributed Ticketing & Flash-Sale Engine")
-    print("   Course: Development and Operations (DevOps) (IS374TFA) - RVCE")
-    print("   Authors: Vinay Sinnur, Vinayak Kumar Singh, Swayam Prayash Pal")
-    print("   Guide: Assistant Prof. B K Srinivas, Dept of ISE")
     print("=" * 75)
     print("\n[+] Starting Microservices & Event Choreography Engine...")
     print("[+] Redis Lua Atomic Seat Locking Engine: ACTIVE")

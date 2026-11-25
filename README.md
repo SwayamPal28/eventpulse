@@ -1,14 +1,5 @@
 # ⚡ EventPulse: An Event-Driven, High-Concurrency Distributed Ticketing & Flash-Sale Engine
 
-> **Course:** Development and Operations (DevOps) (`IS374TFA`)  
-> **Evaluation:** Phase - 1 | Academic Year 2026–27  
-> **Department:** Department of Information Science & Engineering, RV College of Engineering®  
-> **Guide:** Assistant Professor B K Srinivas  
-> **Carried Out By:**  
-> - **Vinay Sinnur** (`1RV23IS138`)  
-> - **Vinayak Kumar Singh** (`1RV23IS139`)  
-> - **Swayam Prayash Pal** (`1RV23IS128`)  
-
 ---
 
 ## 📌 Executive Summary
@@ -25,7 +16,7 @@ Traditional relational ticketing architectures choke under traffic surges becaus
 
 ---
 
-## 🎯 Topic Relevance to DevOps (IS374TFA Course Alignment)
+## 🎯 Topic Relevance & Architectural Capabilities
 
 | DevOps Area | Implementation in EventPulse | Relevance to Syllabus |
 | :--- | :--- | :--- |
